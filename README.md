@@ -54,6 +54,14 @@ Credential resolution order (same as the official `claude` CLI):
    - Linux / Windows: `~/.claude/.credentials.json`.
 3. AWS Bedrock / Google Vertex credentials, if configured for the SDK.
 
+If the sidecar reports `Native CLI binary for <platform> not found` (e.g.
+after installing the SDK with `--omit=optional`), point it at a `claude`
+binary already on your machine instead of reinstalling:
+
+```bash
+CLAUDE_CODE_EXECUTABLE=$(which claude) npx @renkoya1/claude-app-server
+```
+
 So the two usual setups are:
 
 ```bash
@@ -296,6 +304,7 @@ followed by a final `turn/completed` with token usage.
 | `ANTHROPIC_MODEL`              | default model when `thread/start` omits one.                            |
 | `ANTHROPIC_API_KEY`            | raw API key. Only needed if you don't use `claude login` for auth.      |
 | `CLAUDE_HOME`                  | reported as `codexHome` in `initialize` (default `~/.claude`).          |
+| `CLAUDE_CODE_EXECUTABLE`       | path to the Claude Code CLI binary passed to the SDK as `pathToClaudeCodeExecutable`. Set this if the SDK's bundled native binary is missing (e.g. installed with `--omit=optional`), for example `CLAUDE_CODE_EXECUTABLE=/opt/homebrew/bin/claude`. A `pathToClaudeCodeExecutable` set explicitly in `thread/start` session options takes precedence. |
 | `CLAUDE_APP_SERVER_SIDECAR`    | override the sidecar script path. Auto-set by the launcher.             |
 | `CLAUDE_APP_SERVER_SKIP_DOWNLOAD=1` | skip the postinstall binary download.                              |
 | `CLAUDE_APP_SERVER_RELEASE_URL` | override the binary download template used by postinstall.            |

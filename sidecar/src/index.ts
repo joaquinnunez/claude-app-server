@@ -35,6 +35,7 @@ import {
   type McpServerConfig,
 } from "@anthropic-ai/claude-agent-sdk";
 import * as readline from "node:readline";
+import { resolvePathToClaudeCodeExecutable } from "./options.js";
 
 // --- Permissive option blob ---------------------------------------------
 
@@ -349,6 +350,14 @@ function buildOptions(session: Session): Options {
     if (BRIDGE_KEYS.has(k)) continue;
     if (v === undefined) continue;
     opts[k] = v;
+  }
+
+  const resolvedExecutable = resolvePathToClaudeCodeExecutable(
+    opts.pathToClaudeCodeExecutable,
+    process.env,
+  );
+  if (resolvedExecutable !== undefined) {
+    opts.pathToClaudeCodeExecutable = resolvedExecutable;
   }
 
   // Always inject the abort controller from the session.

@@ -20,6 +20,7 @@
  */
 import { query, HOOK_EVENTS, } from "@anthropic-ai/claude-agent-sdk";
 import * as readline from "node:readline";
+import { resolvePathToClaudeCodeExecutable } from "./options.js";
 // --- Output helpers -----------------------------------------------------
 function emit(event) {
     process.stdout.write(JSON.stringify(event) + "\n");
@@ -90,6 +91,10 @@ function buildOptions(session) {
         if (v === undefined)
             continue;
         opts[k] = v;
+    }
+    const resolvedExecutable = resolvePathToClaudeCodeExecutable(opts.pathToClaudeCodeExecutable, process.env);
+    if (resolvedExecutable !== undefined) {
+        opts.pathToClaudeCodeExecutable = resolvedExecutable;
     }
     // Always inject the abort controller from the session.
     opts.abortController = session.abort;
