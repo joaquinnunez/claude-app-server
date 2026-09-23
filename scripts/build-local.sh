@@ -18,6 +18,11 @@ echo "==> Building TS sidecar (with devDeps for tsc)"
 echo "==> Pruning sidecar to production deps only"
 (
   cd sidecar
+  # `npm prune` rewrites package-lock.json (e.g. drops `libc` fields),
+  # which dirties the tree mid-release and makes `npm version` bail.
+  # Keep the committed lockfile byte-for-byte.
+  cp package-lock.json package-lock.json.bak
+  trap 'mv -f package-lock.json.bak package-lock.json' EXIT
   npm prune --omit=dev
 )
 
